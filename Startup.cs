@@ -33,7 +33,21 @@ namespace SS_API
         {
             // Injeção de services
             services.AddTransient<IProjectService, ProjectService>();
+            services.AddTransient<ICourseService, CourseService>();
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowOrigin",
+                builder =>
+                {
+                    builder.WithOrigins("http://localhost:4200")
+                                        .AllowAnyHeader()
+                                        .AllowAnyMethod()
+                                        .AllowCredentials();
+                });
+            });
             services.AddMvc();
+
             services.AddDbContext<StreamerContext>(
                 x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
             );
@@ -73,6 +87,7 @@ namespace SS_API
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
+            app.UseCors("AllowOrigin");
             app.UseMvc();
 
             // Ativando middlewares para uso do Swagger
