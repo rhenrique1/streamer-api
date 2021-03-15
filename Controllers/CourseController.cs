@@ -18,6 +18,25 @@ namespace SS_API.Controllers
         }
 
         [HttpGet]
+        [Route("{courseId}")]
+        public async Task<IActionResult> GetById(int courseId)
+        {
+            try
+            {
+                var course = await _courseService.FindCourseById(courseId);
+                if (course != null)
+                {
+                    return Ok(course);
+                }
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { e.Message });
+            }
+        }
+
+        [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             try
